@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SampahKu – Diagram Arsitektur Cloud</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; margin: 0; padding: 24px; }
+  h1 { text-align: center; color: #2D7D46; font-size: 22px; margin-bottom: 6px; }
+  p { text-align: center; color: #666; font-size: 13px; margin-bottom: 24px; }
+  .diagram { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); max-width: 960px; margin: 0 auto; }
+  svg text { font-family: 'Segoe UI', sans-serif; }
+</style>
+</head>
+<body>
+<h1>🗑️ SampahKu – Arsitektur Cloud AWS</h1>
+<p>Sistem Manajemen Persampahan Kota Bandung | UTS Cloud Computing</p>
+<div class="diagram">
+<svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" width="100%">
+  <!-- Background -->
+  <rect width="900" height="620" fill="#F8FFFE" rx="12"/>
+
+  <!-- INTERNET -->
+  <rect x="340" y="16" width="220" height="54" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+  <text x="450" y="38" text-anchor="middle" font-size="11" fill="#1976D2" font-weight="700">🌐 INTERNET</text>
+  <text x="450" y="56" text-anchor="middle" font-size="10" fill="#666">Users / GitHub Actions</text>
+
+  <!-- Arrow down from internet -->
+  <line x1="450" y1="70" x2="450" y2="100" stroke="#999" stroke-width="2" stroke-dasharray="4"/>
+  <polygon points="445,98 455,98 450,106" fill="#999"/>
+
+  <!-- INTERNET GATEWAY -->
+  <rect x="350" y="106" width="200" height="40" rx="8" fill="#FFF3E0" stroke="#F57C00" stroke-width="2"/>
+  <text x="450" y="122" text-anchor="middle" font-size="11" fill="#E65100" font-weight="700">🔀 Internet Gateway</text>
+  <text x="450" y="138" text-anchor="middle" font-size="10" fill="#999">aws-igw-sampahku</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="146" x2="450" y2="168" stroke="#999" stroke-width="2"/>
+  <polygon points="445,166 455,166 450,174" fill="#999"/>
+
+  <!-- VPC BOX -->
+  <rect x="30" y="174" width="840" height="400" rx="14" fill="none" stroke="#2D7D46" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <text x="50" y="196" font-size="13" fill="#2D7D46" font-weight="700">🏢 VPC: sampahku-vpc (10.0.0.0/16) — ap-southeast-1</text>
+
+  <!-- PUBLIC SUBNET -->
+  <rect x="50" y="208" width="500" height="340" rx="12" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="66" y="228" font-size="11" fill="#388E3C" font-weight="700">🟢 Public Subnet (10.0.1.0/24)</text>
+
+  <!-- EC2 Box -->
+  <rect x="70" y="238" width="460" height="290" rx="10" fill="white" stroke="#FF9800" stroke-width="2"/>
+  <text x="300" y="260" text-anchor="middle" font-size="12" fill="#E65100" font-weight="700">⚡ EC2 Instance (t2.micro) – Ubuntu</text>
+  <text x="300" y="276" text-anchor="middle" font-size="10" fill="#999">Public IP: 54.x.x.x | Security Group: sg-sampahku</text>
+
+  <!-- Docker box inside EC2 -->
+  <rect x="90" y="284" width="420" height="224" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="300" y="302" text-anchor="middle" font-size="11" fill="#1565C0" font-weight="700">🐳 Docker Compose</text>
+
+  <!-- Frontend container -->
+  <rect x="108" y="312" width="178" height="80" rx="8" fill="white" stroke="#0288D1" stroke-width="1.5"/>
+  <text x="197" y="332" text-anchor="middle" font-size="11" fill="#0277BD" font-weight="700">📦 Container: Frontend</text>
+  <text x="197" y="350" text-anchor="middle" font-size="10" fill="#555">Nginx:alpine</text>
+  <text x="197" y="365" text-anchor="middle" font-size="10" fill="#555">Port: 80</text>
+  <text x="197" y="380" text-anchor="middle" font-size="10" fill="#777">HTML/CSS/JS SPA</text>
+
+  <!-- Backend container -->
+  <rect x="314" y="312" width="178" height="80" rx="8" fill="white" stroke="#388E3C" stroke-width="1.5"/>
+  <text x="403" y="332" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="700">📦 Container: Backend</text>
+  <text x="403" y="350" text-anchor="middle" font-size="10" fill="#555">Node.js 20 Alpine</text>
+  <text x="403" y="365" text-anchor="middle" font-size="10" fill="#555">Port: 3000</text>
+  <text x="403" y="380" text-anchor="middle" font-size="10" fill="#777">Express.js REST API</text>
+
+  <!-- Arrow between frontend and backend -->
+  <line x1="286" y1="352" x2="314" y2="352" stroke="#666" stroke-width="1.5"/>
+  <polygon points="310,348 318,352 310,356" fill="#666"/>
+  <text x="300" y="346" text-anchor="middle" font-size="9" fill="#999">proxy /api</text>
+
+  <!-- Network label -->
+  <text x="300" y="418" text-anchor="middle" font-size="10" fill="#666">🔗 Docker Network: sampahku-network (bridge)</text>
+
+  <!-- Volumes -->
+  <rect x="108" y="430" width="384" height="66" rx="6" fill="#FFF8E1" stroke="#FFC107" stroke-width="1"/>
+  <text x="300" y="448" text-anchor="middle" font-size="10" fill="#795548" font-weight="700">📋 Environment Variables (.env)</text>
+  <text x="300" y="464" text-anchor="middle" font-size="9" fill="#999">DB_HOST • DB_PASSWORD • AWS_ACCESS_KEY • S3_BUCKET_NAME • JWT_SECRET</text>
+  <text x="300" y="478" text-anchor="middle" font-size="9" fill="#999">AWS_REGION • DB_USER • DB_NAME • NODE_ENV</text>
+
+  <!-- PRIVATE SUBNET -->
+  <rect x="580" y="208" width="260" height="340" rx="12" fill="#FCE4EC" stroke="#E91E63" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="596" y="228" font-size="11" fill="#C2185B" font-weight="700">🔴 Private Subnet (10.0.2.0/24)</text>
+
+  <!-- RDS Box -->
+  <rect x="600" y="238" width="220" height="140" rx="10" fill="white" stroke="#E91E63" stroke-width="2"/>
+  <text x="710" y="262" text-anchor="middle" font-size="12" fill="#C2185B" font-weight="700">🗄️ AWS RDS</text>
+  <text x="710" y="278" text-anchor="middle" font-size="10" fill="#666">PostgreSQL 15</text>
+  <text x="710" y="296" text-anchor="middle" font-size="10" fill="#555">db.t3.micro</text>
+  <text x="710" y="312" text-anchor="middle" font-size="10" fill="#777">Database: sampahku</text>
+  <rect x="620" y="322" width="180" height="44" rx="6" fill="#FCE4EC"/>
+  <text x="710" y="340" text-anchor="middle" font-size="9" fill="#880E4F">Tables: users • laporan_sampah</text>
+  <text x="710" y="354" text-anchor="middle" font-size="9" fill="#880E4F">jadwal_pengangkutan • edukasi</text>
+
+  <!-- Security note -->
+  <rect x="600" y="392" width="220" height="50" rx="8" fill="#F3E5F5" stroke="#9C27B0" stroke-width="1"/>
+  <text x="710" y="412" text-anchor="middle" font-size="10" fill="#7B1FA2" font-weight="700">🔒 Security Group</text>
+  <text x="710" y="428" text-anchor="middle" font-size="9" fill="#666">Port 5432 only from</text>
+  <text x="710" y="440" text-anchor="middle" font-size="9" fill="#666">EC2 Security Group</text>
+
+  <!-- NAT Gateway (optional) -->
+  <rect x="600" y="458" width="220" height="34" rx="8" fill="#E8EAF6" stroke="#5C6BC0" stroke-width="1"/>
+  <text x="710" y="472" text-anchor="middle" font-size="10" fill="#3949AB" font-weight="700">🔁 NAT Gateway (opsional)</text>
+  <text x="710" y="484" text-anchor="middle" font-size="9" fill="#666">Untuk private subnet → internet</text>
+
+  <!-- Arrow EC2 to RDS -->
+  <line x1="530" y1="330" x2="600" y2="308" stroke="#C2185B" stroke-width="2" stroke-dasharray="5,3"/>
+  <polygon points="596,304 604,310 596,316" fill="#C2185B"/>
+  <text x="558" y="320" text-anchor="middle" font-size="9" fill="#C2185B" transform="rotate(-10,558,320)">Port 5432</text>
+
+  <!-- S3 (outside VPC) -->
+  <rect x="660" y="16" width="210" height="80" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+  <text x="765" y="40" text-anchor="middle" font-size="12" fill="#1B5E20" font-weight="700">☁️ AWS S3</text>
+  <text x="765" y="56" text-anchor="middle" font-size="10" fill="#666">sampahku-storage</text>
+  <text x="765" y="70" text-anchor="middle" font-size="9" fill="#888">foto laporan/</text>
+  <text x="765" y="82" text-anchor="middle" font-size="9" fill="#888">edukasi/</text>
+
+  <!-- Arrow EC2 to S3 -->
+  <line x1="530" y1="380" x2="760" y2="100" stroke="#2E7D32" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <polygon points="756,96 764,102 756,108" fill="#2E7D32"/>
+  <text x="650" y="250" text-anchor="middle" font-size="9" fill="#2E7D32" transform="rotate(-52,650,250)">upload/read files</text>
+
+  <!-- GitHub Actions -->
+  <rect x="10" y="16" width="200" height="80" rx="10" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
+  <text x="110" y="40" text-anchor="middle" font-size="12" fill="#4A148C" font-weight="700">⚙️ GitHub Actions</text>
+  <text x="110" y="56" text-anchor="middle" font-size="10" fill="#666">CI/CD Pipeline</text>
+  <text x="110" y="70" text-anchor="middle" font-size="9" fill="#888">build → test → deploy</text>
+  <text x="110" y="82" text-anchor="middle" font-size="9" fill="#888">via SSH + rsync</text>
+
+  <!-- Arrow GitHub to EC2 -->
+  <path d="M 110,96 L 110,380 L 70,380" stroke="#7B1FA2" stroke-width="1.5" stroke-dasharray="5,3" fill="none"/>
+  <polygon points="70,376 62,380 70,384" fill="#7B1FA2"/>
+  <text x="42" y="370" font-size="9" fill="#7B1FA2">SSH deploy</text>
+
+  <!-- Legend -->
+  <rect x="50" y="572" width="800" height="32" rx="6" fill="#F5F5F5"/>
+  <text x="60" y="592" font-size="10" fill="#555">🟢 Public Subnet</text>
+  <text x="160" y="592" font-size="10" fill="#555">🔴 Private Subnet (RDS tidak bisa diakses langsung dari internet)</text>
+  <text x="530" y="592" font-size="10" fill="#555">🐳 Docker Compose mengelola 2 container</text>
+  <text x="740" y="592" font-size="10" fill="#555">☁️ S3 = file storage</text>
+</svg>
+</div>
+
+<div style="max-width:960px;margin:24px auto;background:white;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.08)">
+  <h2 style="color:#2D7D46;font-size:16px;margin-bottom:12px">📋 Penjelasan Komponen</h2>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr style="background:#E8F5E9"><th style="padding:8px;text-align:left;border:1px solid #ddd">Komponen</th><th style="padding:8px;text-align:left;border:1px solid #ddd">Layanan AWS</th><th style="padding:8px;text-align:left;border:1px solid #ddd">Fungsi</th></tr>
+    <tr><td style="padding:8px;border:1px solid #ddd">Internet Gateway</td><td style="padding:8px;border:1px solid #ddd">AWS IGW</td><td style="padding:8px;border:1px solid #ddd">Menghubungkan VPC ke internet publik</td></tr>
+    <tr style="background:#f9f9f9"><td style="padding:8px;border:1px solid #ddd">EC2 Instance</td><td style="padding:8px;border:1px solid #ddd">EC2 t2.micro</td><td style="padding:8px;border:1px solid #ddd">Menjalankan Docker containers (frontend + backend)</td></tr>
+    <tr><td style="padding:8px;border:1px solid #ddd">Database</td><td style="padding:8px;border:1px solid #ddd">RDS PostgreSQL</td><td style="padding:8px;border:1px solid #ddd">Menyimpan data users, laporan, jadwal, edukasi</td></tr>
+    <tr style="background:#f9f9f9"><td style="padding:8px;border:1px solid #ddd">File Storage</td><td style="padding:8px;border:1px solid #ddd">S3 Bucket</td><td style="padding:8px;border:1px solid #ddd">Menyimpan foto laporan sampah yang diupload warga</td></tr>
+    <tr><td style="padding:8px;border:1px solid #ddd">CI/CD</td><td style="padding:8px;border:1px solid #ddd">GitHub Actions</td><td style="padding:8px;border:1px solid #ddd">Otomatis build, test, dan deploy saat push ke main</td></tr>
+    <tr style="background:#f9f9f9"><td style="padding:8px;border:1px solid #ddd">VPC</td><td style="padding:8px;border:1px solid #ddd">AWS VPC</td><td style="padding:8px;border:1px solid #ddd">Isolasi jaringan, RDS di private subnet (aman)</td></tr>
+  </table>
+</div>
+</body>
+</html>
